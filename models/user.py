@@ -20,6 +20,8 @@ class User(UserMixin, db.Model):
         default=lambda: datetime.now(UTC),
         onupdate=lambda: datetime.now(UTC),
     )
+    groups = db.relationship("Group", back_populates="owner", cascade="all, delete-orphan")
+    participants = db.relationship("Participant", back_populates="user")
 
     def set_password(self, password: str) -> None:
         self.password_hash = generate_password_hash(password)

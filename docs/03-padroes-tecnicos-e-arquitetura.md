@@ -21,7 +21,7 @@ Fonte: `PRD.md`.
 - Regras de cálculo centralizadas em serviço dedicado.
 - Uso de templates e componentes reutilizáveis.
 
-## Padrões de implementação (quando o código for criado)
+## Padrões de implementação
 
 - Manter regras de negócio no backend.
 - Validar dados tanto em formulário quanto no backend.
@@ -31,4 +31,10 @@ Fonte: `PRD.md`.
 
 ## Status atual
 
-- Estes padrões ainda não podem ser validados no código, pois a aplicação ainda não foi implementada no repositório.
+- A aplicacao Flask usa application factory em `app.py`.
+- Extensoes ficam centralizadas em `extensions.py`.
+- Rotas estao separadas em blueprints (`auth` e `groups`).
+- Modelos estao separados em `models/` (`User`, `Group`, `Participant`, `Expense`, `ExpenseParticipant`).
+- Formularios WTForms ficam em `forms/`.
+- A divisao igualitaria usada ao registrar despesas fica em `services/expense_split_service.py`.
+- O calculo de saldo, status financeiro e sugestao simples de acerto fica em `services/settlement_service.py`.

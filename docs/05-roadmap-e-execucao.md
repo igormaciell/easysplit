@@ -24,3 +24,10 @@ Fonte: `PRD.md`.
 - Tratar os itens do PRD como checklist de execução.
 - Marcar progresso diretamente no PRD ou em ferramenta de gestão.
 - Priorizar primeiro os fluxos críticos antes de itens opcionais.
+
+## Status atual pelo `TASKS.md`
+
+- Sprints 0 a 6 estao marcadas como entregues.
+- Sprint 7 permanece pendente para refinamentos de UI e validacoes.
+- Sprint 8 permanece pendente para teste do fluxo completo.
+- Sprint 9 permanece opcional para preparacao de producao.

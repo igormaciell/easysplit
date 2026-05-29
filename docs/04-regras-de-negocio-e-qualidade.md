@@ -27,5 +27,16 @@ Fonte: `PRD.md`.
 
 ## Status atual
 
-- As regras acima representam critérios de implementação e validação futura.
-- Ainda não há código para verificação automática desses critérios no repositório.
+- Implementado ate agora:
+  - Rotas privadas de grupos, participantes e despesas usam autenticacao.
+  - Acesso a grupo e recursos filhos e filtrado por `owner_id=current_user.id`.
+  - Despesa sempre e criada dentro de um grupo autorizado.
+  - Pagador e participantes da divisao sao validados contra o grupo atual.
+  - Valor de despesa precisa ser maior que zero.
+  - Divisao igualitaria e salva em `ExpenseParticipant`.
+  - Remocao de participante com historico de despesa fica bloqueada.
+  - Calculo de saldo usa `saldo = total_pago - total_devido`.
+  - Resumo financeiro exibe total gasto, total pago, total devido, saldo e status por participante.
+  - Sugestao simples de acerto conecta quem deve pagar a quem deve receber.
+- Pendente:
+  - Testes formais do fluxo completo.

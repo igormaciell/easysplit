@@ -1,269 +1,338 @@
-{% extends "base.html" %}
-
-{% block content %}
-<div class="d-flex flex-column flex-md-row justify-content-between gap-3 align-items-md-center mb-4">
-    <div>
-        <a class="small text-decoration-none" href="{{ url_for('groups.index') }}">Voltar para grupos</a>
-        <h1 class="h3 mb-1">{{ group.nome }}</h1>
-        <p class="text-muted mb-0">Acompanhe o resumo financeiro, participantes e despesas deste grupo.</p>
-    </div>
+{% extends "base.html" %} {% block content %}
+<div
+  class="d-flex flex-column flex-md-row justify-content-between gap-3 align-items-md-center mb-4"
+>
+  <div>
+    <a class="small text-decoration-none" href="{{ url_for('groups.index') }}"
+      >Voltar para grupos</a
+    >
+    <h1 class="h3 mb-1">{{ group.nome }}</h1>
+    <p class="text-muted mb-0">
+      Acompanhe o resumo financeiro, participantes e despesas deste grupo.
+    </p>
+  </div>
 </div>
 
 <section class="row g-3 mb-4">
-    <div class="col-12 col-sm-6 col-xl-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <div class="text-muted small">Total gasto</div>
-                <div class="h4 mb-0">{{ summary.total_spent|brl }}</div>
-            </div>
-        </div>
+  <div class="col-12 col-sm-6 col-xl-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="text-muted small">Total gasto</div>
+        <div class="h4 mb-0">{{ summary.total_spent|brl }}</div>
+      </div>
     </div>
-    <div class="col-12 col-sm-6 col-xl-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <div class="text-muted small">Participantes</div>
-                <div class="h4 mb-0">{{ summary.participant_count }}</div>
-            </div>
-        </div>
+  </div>
+  <div class="col-12 col-sm-6 col-xl-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="text-muted small">Participantes</div>
+        <div class="h4 mb-0">{{ summary.participant_count }}</div>
+      </div>
     </div>
-    <div class="col-12 col-sm-6 col-xl-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <div class="text-muted small">Despesas</div>
-                <div class="h4 mb-0">{{ summary.expense_count }}</div>
-            </div>
-        </div>
+  </div>
+  <div class="col-12 col-sm-6 col-xl-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="text-muted small">Despesas</div>
+        <div class="h4 mb-0">{{ summary.expense_count }}</div>
+      </div>
     </div>
-    <div class="col-12 col-sm-6 col-xl-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <div class="text-muted small">Maior despesa</div>
-                {% if summary.largest_expense %}
-                    <div class="h6 mb-1">{{ summary.largest_expense.amount|brl }}</div>
-                    <div class="small text-muted text-truncate">{{ summary.largest_expense.title }}</div>
-                {% else %}
-                    <div class="h6 mb-0">Sem despesas</div>
-                {% endif %}
-            </div>
+  </div>
+  <div class="col-12 col-sm-6 col-xl-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="text-muted small">Maior despesa</div>
+        {% if summary.largest_expense %}
+        <div class="h6 mb-1">{{ summary.largest_expense.amount|brl }}</div>
+        <div class="small text-muted text-truncate">
+          {{ summary.largest_expense.title }}
         </div>
+        {% else %}
+        <div class="h6 mb-0">Sem despesas</div>
+        {% endif %}
+      </div>
     </div>
+  </div>
 </section>
 
 <section class="row g-4 mb-4">
-    <div class="col-12 col-xl-8">
-        <div class="card h-100">
-            <div class="card-body">
-                <h2 class="h5 mb-3">Resumo financeiro</h2>
-                {% if summary.balances %}
-                    <div class="table-responsive">
-                        <table class="table align-middle">
-                            <thead>
-                                <tr>
-                                    <th>Participante</th>
-                                    <th>Total pago</th>
-                                    <th>Total devido</th>
-                                    <th>Saldo</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for balance in summary.balances %}
-                                    <tr>
-                                        <td>{{ balance.participant.nome }}</td>
-                                        <td>{{ balance.total_paid|brl }}</td>
-                                        <td>{{ balance.total_due|brl }}</td>
-                                        <td>{{ balance.balance|brl }}</td>
-                                        <td><span class="badge text-bg-{{ balance.status_class }}">{{ balance.status_label }}</span></td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    {% if summary.expense_count == 0 %}
-                        <p class="text-muted small mb-0">Registre uma despesa para que os saldos comecem a mudar.</p>
-                    {% endif %}
-                {% else %}
-                    <p class="text-muted mb-0">Adicione participantes para visualizar saldos.</p>
-                {% endif %}
-            </div>
+  <div class="col-12 col-xl-8">
+    <div class="card h-100">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Resumo financeiro</h2>
+        {% if summary.balances %}
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th>Participante</th>
+                <th>Total pago</th>
+                <th>Total devido</th>
+                <th>Saldo</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for balance in summary.balances %}
+              <tr>
+                <td>{{ balance.participant.nome }}</td>
+                <td>{{ balance.total_paid|brl }}</td>
+                <td>{{ balance.total_due|brl }}</td>
+                <td>{{ balance.balance|brl }}</td>
+                <td>
+                  <span class="badge text-bg-{{ balance.status_class }}"
+                    >{{ balance.status_label }}</span
+                  >
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
+        {% if summary.expense_count == 0 %}
+        <p class="text-muted small mb-0">
+          Registre uma despesa para que os saldos comecem a mudar.
+        </p>
+        {% endif %} {% else %}
+        <p class="text-muted mb-0">
+          Adicione participantes para visualizar saldos.
+        </p>
+        {% endif %}
+      </div>
     </div>
+  </div>
 
-    <div class="col-12 col-xl-4">
-        <div class="card h-100">
-            <div class="card-body">
-                <h2 class="h5 mb-3">Sugestão de acerto</h2>
-                {% if summary.settlements %}
-                    <ul class="list-group list-group-flush">
-                        {% for settlement in summary.settlements %}
-                            <li class="list-group-item px-0">
-                                {{ settlement.payer.nome }} paga {{ settlement.amount|brl }} para {{ settlement.receiver.nome }}.
-                            </li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p class="text-muted mb-0">Não há acertos pendentes.</p>
-                {% endif %}
-            </div>
-        </div>
+  <div class="col-12 col-xl-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Sugestão de acerto</h2>
+        {% if summary.settlements %}
+        <ul class="list-group list-group-flush">
+          {% for settlement in summary.settlements %}
+          <li class="list-group-item px-0">
+            {{ settlement.payer.nome }} paga {{ settlement.amount|brl }} para {{
+            settlement.receiver.nome }}.
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-muted mb-0">Não há acertos pendentes.</p>
+        {% endif %}
+      </div>
     </div>
+  </div>
 </section>
 
 <section class="row g-4 mb-4">
-    <div class="col-12 col-lg-5">
-        <div class="card h-100">
-            <div class="card-body">
-                <h2 class="h5 mb-3">Convidar participante</h2>
-                {% if is_owner %}
-                    <form method="post" action="{{ url_for('groups.invite_participant', group_id=group.id) }}" novalidate>
-                        {{ invite_form.hidden_tag() }}
-                        <div class="mb-3">
-                            {{ invite_form.email.label(class="form-label") }}
-                            {{ invite_form.email(class="form-control", placeholder="exemplo@email.com") }}
-                            {% for error in invite_form.email.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
-                            <div class="form-text">A pessoa precisa ter conta no EasySplit para aceitar o convite.</div>
-                        </div>
-                        {{ invite_form.submit(class="btn btn-primary") }}
-                    </form>
-                {% else %}
-                    <p class="text-muted mb-0">Apenas o dono do grupo pode enviar convites.</p>
-                {% endif %}
+  <div class="col-12 col-lg-5">
+    <div class="card h-100">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Convidar participante</h2>
+        {% if is_owner %}
+        <form
+          method="post"
+          action="{{ url_for('groups.invite_participant', group_id=group.id) }}"
+          novalidate
+        >
+          {{ invite_form.hidden_tag() }}
+          <div class="mb-3">
+            {{ invite_form.email.label(class="form-label") }} {{
+            invite_form.email(class="form-control" + (" is-invalid" if
+            invite_form.email.errors else ""), placeholder="exemplo@email.com")
+            }} {% for error in invite_form.email.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+            <div class="form-text">
+              A pessoa precisa ter conta no EasySplit para aceitar o convite.
             </div>
-        </div>
+          </div>
+          {{ invite_form.submit(class="btn btn-primary") }}
+        </form>
+        {% else %}
+        <p class="text-muted mb-0">
+          Apenas o dono do grupo pode enviar convites.
+        </p>
+        {% endif %}
+      </div>
     </div>
+  </div>
 
-    <div class="col-12 col-lg-7">
-        <div class="card h-100">
-            <div class="card-body">
-                <h2 class="h5 mb-3">Participantes</h2>
-                {% if participants %}
-                    <ul class="list-group list-group-flush">
-                        {% for participant in participants %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center gap-3 px-0">
-                                <div>
-                                    <div>{{ participant.nome }}</div>
-                                    {% if participant.user %}
-                                        <div class="text-muted small">{{ participant.user.email }}</div>
-                                    {% endif %}
-                                </div>
-                                <form method="post" action="{{ url_for('groups.delete_participant', group_id=group.id, participant_id=participant.id) }}" onsubmit="return confirm('Remover este participante?');">
-                                    {{ delete_form.hidden_tag() }}
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">Remover</button>
-                                </form>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p class="text-muted mb-0">Nenhum participante cadastrado neste grupo.</p>
-                {% endif %}
-                {% if is_owner and invitations %}
-                    <hr>
-                    <h3 class="h6">Convites</h3>
-                    <ul class="list-group list-group-flush">
-                        {% for invite in invitations %}
-                            {% if invite.status != 'accepted' %}
-                                {% set status_label = 'Pendente' if invite.status == 'pending' else 'Recusado' %}
-                                {% set status_class = 'warning' if invite.status == 'pending' else 'secondary' %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                    <div>
-                                        <div>{{ invite.invited_user.email }}</div>
-                                        <div class="text-muted small">Convidado em {{ invite.created_at|date_br }}</div>
-                                    </div>
-                                    <span class="badge text-bg-{{ status_class }}">{{ status_label }}</span>
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
-                {% endif %}
+  <div class="col-12 col-lg-7">
+    <div class="card h-100">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Participantes</h2>
+        {% if participants %}
+        <ul class="list-group list-group-flush">
+          {% for participant in participants %}
+          <li
+            class="list-group-item d-flex justify-content-between align-items-center gap-3 px-0"
+          >
+            <div>
+              <div>{{ participant.nome }}</div>
+              {% if participant.user %}
+              <div class="text-muted small">{{ participant.user.email }}</div>
+              {% endif %}
             </div>
-        </div>
+            <form
+              method="post"
+              action="{{ url_for('groups.delete_participant', group_id=group.id, participant_id=participant.id) }}"
+              onsubmit="return confirm('Remover este participante?');"
+            >
+              {{ delete_form.hidden_tag() }}
+              <button type="submit" class="btn btn-sm btn-outline-danger">
+                Remover
+              </button>
+            </form>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-muted mb-0">
+          Nenhum participante cadastrado neste grupo.
+        </p>
+        {% endif %} {% if is_owner and invitations %}
+        <hr />
+        <h3 class="h6">Convites</h3>
+        <ul class="list-group list-group-flush">
+          {% for invite in invitations %} {% if invite.status != 'accepted' %}
+          {% set status_label = 'Pendente' if invite.status == 'pending' else
+          'Recusado' %} {% set status_class = 'warning' if invite.status ==
+          'pending' else 'secondary' %}
+          <li
+            class="list-group-item d-flex justify-content-between align-items-center px-0"
+          >
+            <div>
+              <div>{{ invite.invited_user.email }}</div>
+              <div class="text-muted small">
+                Convidado em {{ invite.created_at|date_br }}
+              </div>
+            </div>
+            <span class="badge text-bg-{{ status_class }}"
+              >{{ status_label }}</span
+            >
+          </li>
+          {% endif %} {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
     </div>
+  </div>
 </section>
 
 <section class="row g-4">
-    <div class="col-12 col-lg-5">
-        <div class="card h-100">
-            <div class="card-body">
-                <h2 class="h5 mb-3">Nova despesa</h2>
-                {% if participants %}
-                    <form method="post" action="{{ url_for('groups.add_expense', group_id=group.id) }}" novalidate>
-                        {{ expense_form.hidden_tag() }}
-                        <div class="mb-3">
-                            {{ expense_form.title.label(class="form-label") }}
-                            {{ expense_form.title(class="form-control", placeholder="Ex.: Mercado") }}
-                            {% for error in expense_form.title.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
-                        </div>
-                        <div class="row g-3">
-                            <div class="col-12 col-sm-6">
-                                {{ expense_form.amount.label(class="form-label") }}
-                                {{ expense_form.amount(class="form-control", type="number", min="0.01", step="0.01", placeholder="0,00") }}
-                                {% for error in expense_form.amount.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
-                            </div>
-                            <div class="col-12 col-sm-6">
-                                {{ expense_form.expense_date.label(class="form-label") }}
-                                {{ expense_form.expense_date(class="form-control") }}
-                                {% for error in expense_form.expense_date.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            {{ expense_form.payer_participant_id.label(class="form-label") }}
-                            {{ expense_form.payer_participant_id(class="form-select") }}
-                            {% for error in expense_form.payer_participant_id.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
-                        </div>
-                        <div class="mt-3">
-                            {% set participant_select_size = participants|length if participants|length < 6 else 6 %}
-                            {{ expense_form.participant_ids.label(class="form-label") }}
-                            {{ expense_form.participant_ids(class="form-select", multiple=True, size=participant_select_size) }}
-                            <div class="form-text">A divisão do MVP é igualitária entre os participantes selecionados.</div>
-                            {% for error in expense_form.participant_ids.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
-                        </div>
-                        {{ expense_form.submit(class="btn btn-primary mt-3") }}
-                    </form>
-                {% else %}
-                    <p class="text-muted mb-0">Adicione participantes antes de registrar despesas.</p>
-                {% endif %}
+  <div class="col-12 col-lg-5">
+    <div class="card h-100">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Nova despesa</h2>
+        {% if participants %}
+        <form
+          method="post"
+          action="{{ url_for('groups.add_expense', group_id=group.id) }}"
+          novalidate
+        >
+          {{ expense_form.hidden_tag() }}
+          <div class="mb-3">
+            {{ expense_form.title.label(class="form-label") }} {{
+            expense_form.title(class="form-control" + (" is-invalid" if
+            expense_form.title.errors else ""), placeholder="Ex.: Mercado") }}
+            {% for error in expense_form.title.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+          </div>
+          <div class="row g-3">
+            <div class="col-12 col-sm-6">
+              {{ expense_form.amount.label(class="form-label") }} {{
+              expense_form.amount(class="form-control" + (" is-invalid" if
+              expense_form.amount.errors else ""), type="number", min="0.01",
+              step="0.01", placeholder="0,00") }} {% for error in
+              expense_form.amount.errors %}
+              <div class="invalid-feedback">{{ error }}</div>
+              {% endfor %}
             </div>
-        </div>
+            <div class="col-12 col-sm-6">
+              {{ expense_form.expense_date.label(class="form-label") }} {{
+              expense_form.expense_date(class="form-control" + (" is-invalid" if
+              expense_form.expense_date.errors else "")) }} {% for error in
+              expense_form.expense_date.errors %}
+              <div class="invalid-feedback">{{ error }}</div>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="mt-3">
+            {{ expense_form.payer_participant_id.label(class="form-label") }} {{
+            expense_form.payer_participant_id(class="form-select" + ("
+            is-invalid" if expense_form.payer_participant_id.errors else "")) }}
+            {% for error in expense_form.payer_participant_id.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+          </div>
+          <div class="mt-3">
+            {% set participant_select_size = participants|length if
+            participants|length < 6 else 6 %} {{
+            expense_form.participant_ids.label(class="form-label") }} {{
+            expense_form.participant_ids(class="form-select" + (" is-invalid" if
+            expense_form.participant_ids.errors else ""), multiple=True,
+            size=participant_select_size) }}
+            <div class="form-text">
+              A divisão do MVP é igualitária entre os participantes
+              selecionados.
+            </div>
+            {% for error in expense_form.participant_ids.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+          </div>
+          {{ expense_form.submit(class="btn btn-primary mt-3") }}
+        </form>
+        {% else %}
+        <p class="text-muted mb-0">
+          Adicione participantes antes de registrar despesas.
+        </p>
+        {% endif %}
+      </div>
     </div>
+  </div>
 
-    <div class="col-12 col-lg-7">
-        <div class="card h-100">
-            <div class="card-body">
-                <h2 class="h5 mb-3">Histórico de despesas</h2>
-                {% if expenses %}
-                    <div class="table-responsive">
-                        <table class="table align-middle">
-                            <thead>
-                                <tr>
-                                    <th>Data</th>
-                                    <th>Despesa</th>
-                                    <th>Valor</th>
-                                    <th>Pagador</th>
-                                    <th>Divisão</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for expense in expenses %}
-                                    <tr>
-                                        <td>{{ expense.expense_date|date_br }}</td>
-                                        <td>{{ expense.title }}</td>
-                                        <td>{{ expense.amount|brl }}</td>
-                                        <td>{{ expense.payer.nome }}</td>
-                                        <td>
-                                            {% for share in expense.participant_shares %}
-                                                <span class="badge text-bg-light border mb-1">{{ share.participant.nome }}: {{ share.divided_amount|brl }}</span>
-                                            {% endfor %}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                {% else %}
-                    <p class="text-muted mb-0">Nenhuma despesa registrada neste grupo.</p>
-                {% endif %}
-            </div>
+  <div class="col-12 col-lg-7">
+    <div class="card h-100">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Histórico de despesas</h2>
+        {% if expenses %}
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Despesa</th>
+                <th>Valor</th>
+                <th>Pagador</th>
+                <th>Divisão</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for expense in expenses %}
+              <tr>
+                <td>{{ expense.expense_date|date_br }}</td>
+                <td>{{ expense.title }}</td>
+                <td>{{ expense.amount|brl }}</td>
+                <td>{{ expense.payer.nome }}</td>
+                <td>
+                  {% for share in expense.participant_shares %}
+                  <span class="badge text-bg-light border mb-1"
+                    >{{ share.participant.nome }}: {{ share.divided_amount|brl
+                    }}</span
+                  >
+                  {% endfor %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
+        {% else %}
+        <p class="text-muted mb-0">Nenhuma despesa registrada neste grupo.</p>
+        {% endif %}
+      </div>
     </div>
+  </div>
 </section>
 {% endblock %}

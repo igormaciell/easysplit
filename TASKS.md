@@ -96,33 +96,33 @@
 
 ---
 
-### [ ] Tarefa 6.2: Qualidade e Boas Práticas
+### [x] Tarefa 6.2: Qualidade e Boas Práticas
 
 #### 6.2.1 Variáveis de Ambiente
 
-- [ ] Instalar `python-dotenv` e adicionar ao `requirements.txt`
-- [ ] Criar arquivo `.env` na raiz com `SECRET_KEY=<valor-secreto>`
-- [ ] Criar arquivo `.env.example` (sem valores reais) para referência
-- [ ] Atualizar `app.py` para ler `SECRET_KEY` de `os.environ` com fallback `"dev"`
-- [ ] Confirmar que `.env` está no `.gitignore` (já está)
+- [x] Instalar `python-dotenv` e adicionar ao `requirements.txt`
+- [x] Criar arquivo `.env` na raiz com `SECRET_KEY=<valor-secreto>`
+- [x] Criar arquivo `.env.example` (sem valores reais) para referência
+- [x] Atualizar `app.py` para ler `SECRET_KEY` de `os.environ` com fallback `"dev"`
+- [x] Confirmar que `.env` está no `.gitignore` (já está)
 
 #### 6.2.2 Tratamento de Erros
 
-- [ ] Criar pasta `templates/errors/`
-- [ ] Criar `templates/errors/404.html` estendendo `base.html`
-- [ ] Criar `templates/errors/500.html` estendendo `base.html`
-- [ ] Registrar handlers `@app.errorhandler(404)` e `@app.errorhandler(500)` em `create_app()`
+- [x] Criar pasta `templates/errors/`
+- [x] Criar `templates/errors/404.html` estendendo `base.html`
+- [x] Criar `templates/errors/500.html` estendendo `base.html`
+- [x] Registrar handlers `@app.errorhandler(404)` e `@app.errorhandler(500)` em `create_app()`
 
 #### 6.2.3 Logging
 
-- [ ] Substituir qualquer `print()` de debug por `app.logger.info()` / `app.logger.error()`
-- [ ] Configurar nível de log em desenvolvimento: `app.logger.setLevel(logging.DEBUG)` quando `DEBUG=True`
+- [x] Substituir qualquer `print()` de debug por `app.logger.info()` / `app.logger.error()`
+- [x] Configurar nível de log em desenvolvimento: `app.logger.setLevel(logging.DEBUG)` quando `DEBUG=True`
 
 #### 6.2.4 Refinamentos de UI
 
-- [ ] Validar que todos os formulários exibem mensagens de erro inline (Bootstrap `is-invalid`)
-- [ ] Verificar responsividade em mobile da tela de detalhe do grupo
-- [ ] Garantir estado vazio amigável quando grupo não tiver participantes nem despesas
+- [x] Validar que todos os formulários exibem mensagens de erro inline (Bootstrap `is-invalid`)
+- [x] Verificar responsividade em mobile da tela de detalhe do grupo
+- [x] Garantir estado vazio amigável quando grupo não tiver participantes nem despesas
 
 ---
 

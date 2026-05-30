@@ -1,12 +1,17 @@
+import logging
+import os
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
 
 import click
+from dotenv import load_dotenv
 from flask import Flask, render_template
 
 from extensions import db, login_manager
 from models import User
 from routes import auth_bp, groups_bp
+
+load_dotenv()
 
 
 def create_app(config_overrides: dict | None = None) -> Flask:
@@ -16,7 +21,7 @@ def create_app(config_overrides: dict | None = None) -> Flask:
     db_path = base_dir / "easysplit.db"
 
     app.config.update(
-        SECRET_KEY="dev",
+        SECRET_KEY=os.environ.get("SECRET_KEY", "dev"),
         SQLALCHEMY_DATABASE_URI=f"sqlite:///{db_path}",
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
     )
@@ -31,6 +36,20 @@ def create_app(config_overrides: dict | None = None) -> Flask:
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(groups_bp)
+
+    if app.debug:
+        app.logger.setLevel(logging.DEBUG)
+    else:
+        app.logger.setLevel(logging.INFO)
+
+    @app.errorhandler(404)
+    def not_found(e):
+        return render_template("errors/404.html"), 404
+
+    @app.errorhandler(500)
+    def internal_error(e):
+        app.logger.error("Erro interno: %s", e)
+        return render_template("errors/500.html"), 500
 
     @app.template_filter("brl")
     def brl(value) -> str:

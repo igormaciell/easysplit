@@ -1,69 +1,90 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <section class="row g-4">
-    <div class="col-12 col-lg-5">
-        <div class="card">
-            <div class="card-body">
-                <h1 class="h5 mb-3">Novo grupo</h1>
-                <form method="post" novalidate>
-                    {{ form.hidden_tag() }}
-                    <div class="mb-3">
-                        {{ form.nome.label(class="form-label") }}
-                        {{ form.nome(class="form-control", placeholder="Ex.: Viagem de fim de semana") }}
-                        {% for error in form.nome.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
-                    </div>
-                    {{ form.submit(class="btn btn-primary") }}
-                </form>
-            </div>
-        </div>
+  <div class="col-12 col-lg-5">
+    <div class="card">
+      <div class="card-body">
+        <h1 class="h5 mb-3">Novo grupo</h1>
+        <form method="post" novalidate>
+          {{ form.hidden_tag() }}
+          <div class="mb-3">
+            {{ form.nome.label(class="form-label") }} {{
+            form.nome(class="form-control" + (" is-invalid" if form.nome.errors
+            else ""), placeholder="Ex.: Viagem de fim de semana") }} {% for
+            error in form.nome.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+          </div>
+          {{ form.submit(class="btn btn-primary") }}
+        </form>
+      </div>
     </div>
+  </div>
 
-    <div class="col-12 col-lg-7">
-        {% if pending_invites %}
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h2 class="h5 mb-3">Convites pendentes</h2>
-                    <ul class="list-group list-group-flush">
-                        {% for invite in pending_invites %}
-                            <li class="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 px-0">
-                                <div>
-                                    <div>{{ invite.group.nome }}</div>
-                                    <div class="text-muted small">Convidado por {{ invite.invited_by_user.nome }}</div>
-                                </div>
-                                <div class="d-flex gap-2">
-                                    <form method="post" action="{{ url_for('groups.accept_invitation', invite_id=invite.id) }}">
-                                        {{ invite_action_form.hidden_tag() }}
-                                        <button type="submit" class="btn btn-sm btn-success">Aceitar</button>
-                                    </form>
-                                    <form method="post" action="{{ url_for('groups.decline_invitation', invite_id=invite.id) }}">
-                                        {{ invite_action_form.hidden_tag() }}
-                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Recusar</button>
-                                    </form>
-                                </div>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
+  <div class="col-12 col-lg-7">
+    {% if pending_invites %}
+    <div class="card mb-3">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Convites pendentes</h2>
+        <ul class="list-group list-group-flush">
+          {% for invite in pending_invites %}
+          <li
+            class="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 px-0"
+          >
+            <div>
+              <div>{{ invite.group.nome }}</div>
+              <div class="text-muted small">
+                Convidado por {{ invite.invited_by_user.nome }}
+              </div>
             </div>
-        {% endif %}
-        <div class="card">
-            <div class="card-body">
-                <h2 class="h5 mb-3">Meus grupos</h2>
-                {% if groups %}
-                    <ul class="list-group list-group-flush">
-                        {% for group in groups %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                <span>{{ group.nome }}</span>
-                                <a class="btn btn-sm btn-outline-primary" href="{{ url_for('groups.detail', group_id=group.id) }}">Abrir</a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p class="text-muted mb-0">Você ainda não criou grupos.</p>
-                {% endif %}
+            <div class="d-flex gap-2">
+              <form
+                method="post"
+                action="{{ url_for('groups.accept_invitation', invite_id=invite.id) }}"
+              >
+                {{ invite_action_form.hidden_tag() }}
+                <button type="submit" class="btn btn-sm btn-success">
+                  Aceitar
+                </button>
+              </form>
+              <form
+                method="post"
+                action="{{ url_for('groups.decline_invitation', invite_id=invite.id) }}"
+              >
+                {{ invite_action_form.hidden_tag() }}
+                <button type="submit" class="btn btn-sm btn-outline-secondary">
+                  Recusar
+                </button>
+              </form>
             </div>
-        </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
     </div>
+    {% endif %}
+    <div class="card">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Meus grupos</h2>
+        {% if groups %}
+        <ul class="list-group list-group-flush">
+          {% for group in groups %}
+          <li
+            class="list-group-item d-flex justify-content-between align-items-center px-0"
+          >
+            <span>{{ group.nome }}</span>
+            <a
+              class="btn btn-sm btn-outline-primary"
+              href="{{ url_for('groups.detail', group_id=group.id) }}"
+              >Abrir</a
+            >
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-muted mb-0">Você ainda não criou grupos.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
 </section>
 {% endblock %}

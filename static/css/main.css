@@ -470,3 +470,328 @@ body {
 .es-link-all:hover {
   color: var(--es-primary-dark);
 }
+
+/* ============================================================
+   Group Detail Page
+   ============================================================ */
+
+/* --- Header --- */
+.es-back-link {
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--es-text-muted);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  transition: color .15s;
+}
+.es-back-link:hover { color: var(--es-primary); }
+
+.es-group-avatar-lg {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  background: var(--es-primary-light);
+  color: var(--es-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.es-group-detail-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -.5px;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.es-group-detail-sub {
+  font-size: .8rem;
+  color: var(--es-text-muted);
+  margin: .2rem 0 0;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.es-owner-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .25rem;
+  font-size: .72rem;
+  font-weight: 600;
+  color: #d97706;
+  background: #fef3c7;
+  padding: .15rem .55rem;
+  border-radius: 100px;
+}
+
+/* --- Tabs --- */
+.es-tabs {
+  border-bottom: 2px solid var(--es-border);
+  gap: .25rem;
+}
+
+.es-tabs .nav-link {
+  font-size: .875rem;
+  font-weight: 600;
+  color: var(--es-text-muted);
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  padding: .6rem 1rem;
+  margin-bottom: -2px;
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  transition: color .15s;
+}
+
+.es-tabs .nav-link:hover { color: var(--es-primary); }
+
+.es-tabs .nav-link.active {
+  color: var(--es-primary);
+  border-bottom-color: var(--es-primary);
+  background: none;
+}
+
+.es-tab-count {
+  background: var(--es-primary-light);
+  color: var(--es-primary);
+  font-size: .7rem;
+  font-weight: 700;
+  padding: .1rem .45rem;
+  border-radius: 100px;
+  line-height: 1.4;
+}
+
+/* --- Card base --- */
+.es-card {
+  background: var(--es-surface);
+  border: 1px solid var(--es-border);
+  border-radius: var(--es-radius);
+  overflow: hidden;
+}
+
+.es-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--es-border);
+  background: #fcfcfd;
+}
+
+.es-card-title {
+  font-size: .88rem;
+  font-weight: 700;
+  color: var(--es-text);
+  display: flex;
+  align-items: center;
+}
+
+/* --- Balance list --- */
+.es-balance-list { padding: .5rem 0; }
+
+.es-balance-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .75rem 1.25rem;
+  border-bottom: 1px solid var(--es-border);
+  transition: background .1s;
+}
+
+.es-balance-row:last-child { border-bottom: none; }
+.es-balance-row:hover { background: #f8fafc; }
+
+.es-participant-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: .8rem;
+  color: #fff;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.es-participant-dot.lg {
+  width: 40px;
+  height: 40px;
+  font-size: .95rem;
+  border-radius: 10px;
+}
+
+.es-balance-name {
+  font-size: .88rem;
+  font-weight: 600;
+  color: var(--es-text);
+}
+
+.es-balance-sub {
+  font-size: .7rem;
+  color: var(--es-text-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.es-balance-amt {
+  font-size: .88rem;
+  font-weight: 600;
+  color: var(--es-text);
+}
+
+/* --- Settlement list --- */
+.es-settlement-list { padding: .5rem 0; }
+
+.es-settlement-row {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .75rem 1.25rem;
+  border-bottom: 1px solid var(--es-border);
+}
+
+.es-settlement-row:last-child { border-bottom: none; }
+
+.es-settlement-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .1rem;
+  flex-shrink: 0;
+  color: var(--es-text-muted);
+  font-size: .75rem;
+}
+
+.es-settlement-amount {
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--es-primary);
+  white-space: nowrap;
+}
+
+/* --- Expense list --- */
+.es-expense-list { padding: .25rem 0; }
+
+.es-expense-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: .8rem 1.25rem;
+  border-bottom: 1px solid var(--es-border);
+  transition: background .1s;
+}
+
+.es-expense-row:last-child { border-bottom: none; }
+.es-expense-row:hover { background: #f8fafc; }
+
+.es-expense-date {
+  font-size: .75rem;
+  color: var(--es-text-muted);
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 72px;
+}
+
+.es-expense-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.es-expense-title {
+  font-size: .875rem;
+  font-weight: 600;
+  color: var(--es-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.es-expense-payer {
+  font-size: .75rem;
+  color: var(--es-text-muted);
+  margin-top: .1rem;
+  display: flex;
+  align-items: center;
+  gap: .25rem;
+}
+
+.es-expense-shares {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .25rem;
+  flex-shrink: 0;
+  max-width: 240px;
+}
+
+.es-share-badge {
+  font-size: .7rem;
+  background: var(--es-primary-light);
+  color: var(--es-primary);
+  border-radius: 4px;
+  padding: .1rem .4rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.es-expense-amount {
+  font-size: .9rem;
+  font-weight: 700;
+  color: var(--es-text);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* --- Participant list --- */
+.es-participant-list { padding: .25rem 0; }
+
+.es-participant-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .8rem 1.25rem;
+  border-bottom: 1px solid var(--es-border);
+  transition: background .1s;
+}
+
+.es-participant-row:last-child { border-bottom: none; }
+.es-participant-row:hover { background: #f8fafc; }
+
+/* --- Tab empty state --- */
+.es-tab-empty {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  color: var(--es-text-muted);
+  font-size: .88rem;
+}
+
+.es-tab-empty .es-empty-icon {
+  display: block;
+  font-size: 2rem;
+  color: #c7d2fe;
+  margin-bottom: .75rem;
+}
+
+/* --- Utilities --- */
+.fw-600 { font-weight: 600 !important; }
+.fw-700 { font-weight: 700 !important; }
+.text-sm { font-size: .875rem !important; }
+.flex-1 { flex: 1; }
+.min-w-0 { min-width: 0; }
+

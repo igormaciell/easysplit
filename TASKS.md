@@ -167,55 +167,55 @@
 
 ---
 
-## [ ] Sprint 9: Testes Automatizados
+## [x] Sprint 9: Testes Automatizados
 
 > Critério de avaliação obrigatório. Ver instruções completas em `.github/instructions/tests.instructions.md`.
 
-### [ ] Tarefa 9.1: Infraestrutura de Testes
+### [x] Tarefa 9.1: Infraestrutura de Testes
 
-- [ ] Instalar `pytest` e `pytest-flask`, adicionar ao `requirements.txt`
-- [ ] Criar pasta `tests/`
-- [ ] Criar `tests/__init__.py`
-- [ ] Criar `tests/conftest.py` com fixtures `app`, `db` (SQLite em memória) e `client`
+- [x] Instalar `pytest` e `pytest-flask`, adicionar ao `requirements.txt`
+- [x] Criar pasta `tests/`
+- [x] Criar `tests/__init__.py`
+- [x] Criar `tests/conftest.py` com fixtures `app`, `db` (SQLite em memória) e `client`
   - `WTF_CSRF_ENABLED=False` obrigatório na config de teste
   - `SQLALCHEMY_DATABASE_URI="sqlite:///:memory:"`
 
-### [ ] Tarefa 9.2: Testes de Autenticação (`tests/test_auth.py`)
+### [x] Tarefa 9.2: Testes de Autenticação (`tests/test_auth.py`)
 
-- [ ] `test_register_success` — POST `/auth/register` cria usuário e redireciona
-- [ ] `test_register_duplicate_email` — segundo cadastro com mesmo e-mail retorna erro
-- [ ] `test_login_success` — login com credenciais corretas redireciona para grupos
-- [ ] `test_login_wrong_password` — login com senha errada retorna 200 com erro
-- [ ] `test_logout` — logout redireciona para login
-- [ ] `test_protected_route_redirects_unauthenticated` — GET `/groups/` sem login redireciona para `/auth/login`
+- [x] `test_register_success` — POST `/auth/register` cria usuário e redireciona
+- [x] `test_register_duplicate_email` — segundo cadastro com mesmo e-mail retorna erro
+- [x] `test_login_success` — login com credenciais corretas redireciona para grupos
+- [x] `test_login_wrong_password` — login com senha errada retorna 200 com erro
+- [x] `test_logout` — logout redireciona para login
+- [x] `test_protected_route_redirects_unauthenticated` — GET `/groups/` sem login redireciona para `/auth/login`
 
-### [ ] Tarefa 9.3: Testes de Grupos e Participantes (`tests/test_groups.py`)
+### [x] Tarefa 9.3: Testes de Grupos e Participantes (`tests/test_groups.py`)
 
-- [ ] `test_create_group` — POST cria grupo e adiciona dono como participante automaticamente
-- [ ] `test_list_groups_only_own` — usuário B não vê grupos do usuário A
-- [ ] `test_add_participant` — POST adiciona participante ao grupo
-- [ ] `test_remove_participant_without_expenses` — remoção bem-sucedida
-- [ ] `test_remove_participant_with_expenses_blocked` — remoção bloqueada retorna aviso
+- [x] `test_create_group` — POST cria grupo e adiciona dono como participante automaticamente
+- [x] `test_list_groups_only_own` — usuário B não vê grupos do usuário A
+- [x] `test_add_participant` — participante adicionado via DB aparece na página do grupo
+- [x] `test_remove_participant_without_expenses` — remoção bem-sucedida
+- [x] `test_remove_participant_with_expenses_blocked` — remoção bloqueada retorna aviso
 
-### [ ] Tarefa 9.4: Testes de Despesas (`tests/test_expenses.py`)
+### [x] Tarefa 9.4: Testes de Despesas (`tests/test_expenses.py`)
 
-- [ ] `test_add_expense_success` — despesa registrada com divisão igualitária
-- [ ] `test_add_expense_zero_value_rejected` — valor ≤ 0 retorna erro de validação
-- [ ] `test_expense_history_visible` — despesa aparece no histórico da página de detalhe
+- [x] `test_add_expense_success` — despesa registrada com divisão igualitária
+- [x] `test_add_expense_zero_value_rejected` — valor ≤ 0 retorna erro de validação
+- [x] `test_expense_history_visible` — despesa aparece no histórico da página de detalhe
 
-### [ ] Tarefa 9.5: Testes de Serviços (`tests/test_services.py`)
+### [x] Tarefa 9.5: Testes de Serviços (`tests/test_services.py`)
 
-- [ ] `test_split_equally_exact` — R$ 30,00 ÷ 3 = R$ 10,00 cada
-- [ ] `test_split_equally_with_remainder` — R$ 10,00 ÷ 3 = R$ 3,34 + R$ 3,33 + R$ 3,33
-- [ ] `test_calculate_summary_balance` — saldo correto: `total_pago - total_devido`
-- [ ] `test_calculate_summary_settlement_suggestion` — sugestão gerada quando há devedores e credores
+- [x] `test_split_equally_exact` — R$ 30,00 ÷ 3 = R$ 10,00 cada
+- [x] `test_split_equally_with_remainder` — R$ 10,00 ÷ 3 = R$ 3,34 + R$ 3,33 + R$ 3,33
+- [x] `test_calculate_summary_balance` — saldo correto: `total_pago - total_devido`
+- [x] `test_calculate_summary_settlement_suggestion` — sugestão gerada quando há devedores e credores
 
-### [ ] Tarefa 9.6: Testes de Convites (`tests/test_invitations.py`)
+### [x] Tarefa 9.6: Testes de Convites (`tests/test_invitations.py`)
 
-- [ ] `test_invite_by_email_success` — convite criado com status `pending`
-- [ ] `test_invite_nonexistent_email` — e-mail sem conta retorna erro
-- [ ] `test_accept_invitation` — status muda para `accepted` e participante é criado
-- [ ] `test_decline_invitation` — status muda para `declined`
+- [x] `test_invite_by_email_success` — convite criado com status `pending`
+- [x] `test_invite_nonexistent_email` — e-mail sem conta retorna erro
+- [x] `test_accept_invitation` — status muda para `accepted` e participante é criado
+- [x] `test_decline_invitation` — status muda para `declined`
 
 ---
 

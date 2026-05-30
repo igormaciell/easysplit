@@ -1,11 +1,41 @@
+# Ambiente virtual
 venv/
+
+# Python
 __pycache__/
 *.py[cod]
+*.pyo
+*.pyd
+
+# Banco de dados
 *.sqlite3
 *.db
+
+# Variáveis de ambiente
 .env
 .flaskenv
+
+# Ferramentas de desenvolvimento
 .pytest_cache/
 .mypy_cache/
 .vscode/
 .idea/
+
+# Ferramentas de IA (caches e configs locais)
+.copilot/
+.cursor/
+.windsurf/
+.cline/
+.aider
+.aider.tags.cache.v*/
+*.aider*
+
+# Cobertura de testes
+.coverage
+htmlcov/
+coverage.xml
+
+# Build / distribuição
+dist/
+build/
+*.egg-info/

@@ -3,7 +3,9 @@ from .common import EmptyForm
 from .expense import ExpenseForm
 from .group import GroupForm
 from .invitation import InvitationForm
+from .message import MessageForm
 from .participant import ParticipantForm
+from .payment import PaymentForm
 
 __all__ = [
     "LoginForm",
@@ -13,4 +15,6 @@ __all__ = [
     "ParticipantForm",
     "ExpenseForm",
     "EmptyForm",
+    "PaymentForm",
+    "MessageForm",
 ]

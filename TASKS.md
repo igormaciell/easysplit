@@ -231,7 +231,17 @@
 
 ### [ ] Tarefa 10.2: Empacotamento (ZIP)
 
-- [ ] Compactar todos os arquivos **exceto**: `venv/`, `__pycache__/`, `.git/`, `easysplit.db`
+- [ ] Compactar todos os arquivos **exceto**:
+  - `venv/` — ambiente virtual
+  - `__pycache__/` e `*.pyc` / `*.pyo` — bytecode Python
+  - `.git/` — histórico Git
+  - `*.db` / `*.sqlite3` — banco de dados local (`easysplit.db`)
+  - `.env` — variáveis de ambiente com segredos
+  - `.pytest_cache/` e `.mypy_cache/` — cache de ferramentas
+  - `.vscode/` e `.idea/` — configurações de IDE
+  - `.copilot/`, `.cursor/`, `.windsurf/`, `.cline/`, `.aider*` — caches e configs locais de ferramentas de IA
+  - `.coverage` e `htmlcov/` — relatórios de cobertura de testes
+  - `dist/`, `build/`, `*.egg-info/` — artefatos de build
 - [ ] Nomear o arquivo: `GrupoX_EasySplit.zip`
 - [ ] Validar que o ZIP contém: `app.py`, `requirements.txt`, `models/`, `routes/`, `services/`, `forms/`, `templates/`, `static/`, `tests/`, `.env.example`
 

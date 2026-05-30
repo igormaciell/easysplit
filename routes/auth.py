@@ -22,7 +22,7 @@ def register():
             flash("Este e-mail já está cadastrado.", "danger")
             return render_template("auth/register.html", form=form)
 
-        user = User(nome=form.nome.data.strip(), email=email)
+        user = User(nome=form.nome.data.strip(), email=email, telefone=form.telefone.data.strip() if form.telefone.data else "")
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()

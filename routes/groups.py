@@ -1,12 +1,13 @@
 from datetime import UTC, datetime
 
-from flask import Blueprint, abort, flash, redirect, render_template, url_for
+from flask import Blueprint, Response, abort, flash, redirect, render_template, url_for
 from flask_login import current_user, login_required
 from sqlalchemy import or_
 from extensions import db
-from forms import EmptyForm, ExpenseForm, GroupForm, InvitationForm
-from models import Expense, ExpenseParticipant, Group, GroupInvitation, Participant, User
+from forms import EmptyForm, ExpenseForm, GroupForm, InvitationForm, MessageForm, PaymentForm
+from models import Expense, ExpenseParticipant, Group, GroupInvitation, Message, Notification, Participant, Payment, User
 from services import calculate_group_summary, split_amount_equally
+from routes.notifications import create_notification
 
 
 groups_bp = Blueprint("groups", __name__, url_prefix="/groups")
@@ -54,6 +55,12 @@ def _configure_expense_form(form: ExpenseForm, participants: list[Participant]) 
     choices = [(participant.id, participant.nome) for participant in participants]
     form.payer_participant_id.choices = choices
     form.participant_ids.choices = choices
+
+
+def _configure_payment_form(form: PaymentForm, participants: list[Participant]) -> None:
+    choices = [(participant.id, participant.nome) for participant in participants]
+    form.payer_participant_id.choices = choices
+    form.receiver_participant_id.choices = choices
 
 
 def _normalize_name(value: str) -> str:
@@ -108,14 +115,24 @@ def _render_detail(
     group: Group,
     invite_form: InvitationForm | None = None,
     expense_form: ExpenseForm | None = None,
+    payment_form: PaymentForm | None = None,
+    message_form: MessageForm | None = None,
     status_code: int = 200,
 ):
     participants = _group_participants(group)
     expenses = _group_expenses(group)
-    summary = calculate_group_summary(participants, expenses)
+    payments = (
+        Payment.query.filter_by(group_id=group.id)
+        .order_by(Payment.created_at.desc())
+        .all()
+    )
+    summary = calculate_group_summary(participants, expenses, payments)
     invite_form = invite_form or InvitationForm()
     expense_form = expense_form or ExpenseForm()
+    payment_form = payment_form or PaymentForm()
+    message_form = message_form or MessageForm()
     _configure_expense_form(expense_form, participants)
+    _configure_payment_form(payment_form, participants)
     is_owner = group.owner_id == current_user.id
     invitations = []
     if is_owner:
@@ -124,6 +141,12 @@ def _render_detail(
             .order_by(GroupInvitation.created_at.desc())
             .all()
         )
+    messages = (
+        Message.query.filter_by(group_id=group.id)
+        .order_by(Message.created_at.asc())
+        .limit(100)
+        .all()
+    )
 
     return (
         render_template(
@@ -131,11 +154,15 @@ def _render_detail(
             group=group,
             invite_form=invite_form,
             expense_form=expense_form,
+            payment_form=payment_form,
+            message_form=message_form,
             delete_form=EmptyForm(),
             participants=participants,
             expenses=expenses,
+            payments=payments,
             summary=summary,
             invitations=invitations,
+            messages=messages,
             is_owner=is_owner,
             title=group.nome,
         ),
@@ -250,6 +277,15 @@ def invite_participant(group_id: int):
             invited_by_user_id=current_user.id,
         )
         db.session.add(invite)
+
+        create_notification(
+            user_id=user.id,
+            type=Notification.TYPE_INVITE,
+            title=f"Convite para o grupo {group.nome}",
+            body=f"{current_user.nome} te convidou para participar.",
+            link=url_for("groups.index"),
+        )
+
         db.session.commit()
 
         flash("Convite enviado com sucesso.", "success")
@@ -424,7 +460,191 @@ def add_expense(group_id: int):
 
         db.session.add(expense)
         db.session.commit()
+
+        for p in participants:
+            if p.user_id and p.user_id != current_user.id:
+                create_notification(
+                    user_id=p.user_id,
+                    type=Notification.TYPE_EXPENSE,
+                    title=f"Nova despesa em {group.nome}",
+                    body=f"{current_user.nome} registrou \"{form.title.data.strip()}\".",
+                    link=url_for("groups.detail", group_id=group.id),
+                )
+
+        db.session.commit()
         flash("Despesa registrada com sucesso.", "success")
         return redirect(url_for("groups.detail", group_id=group.id))
 
     return _render_detail(group, expense_form=form, status_code=400)
+
+
+@groups_bp.post("/<int:group_id>/payments")
+@login_required
+def add_payment(group_id: int):
+    group = _get_group_for_user_or_404(group_id)
+    participants = _group_participants(group)
+    form = PaymentForm()
+    _configure_payment_form(form, participants)
+
+    if not participants:
+        flash("Adicione participantes antes de registrar pagamentos.", "warning")
+        return redirect(url_for("groups.detail", group_id=group.id))
+
+    if form.validate_on_submit():
+        participant_by_id = {p.id: p for p in participants}
+
+        payer_id = form.payer_participant_id.data
+        receiver_id = form.receiver_participant_id.data
+
+        if payer_id not in participant_by_id:
+            form.payer_participant_id.errors.append("Selecione um pagador válido.")
+            return _render_detail(group, payment_form=form, status_code=400)
+
+        if receiver_id not in participant_by_id:
+            form.receiver_participant_id.errors.append("Selecione um recebedor válido.")
+            return _render_detail(group, payment_form=form, status_code=400)
+
+        if payer_id == receiver_id:
+            form.receiver_participant_id.errors.append("Pagador e recebedor devem ser diferentes.")
+            return _render_detail(group, payment_form=form, status_code=400)
+
+        payment = Payment(
+            group_id=group.id,
+            payer_participant_id=payer_id,
+            receiver_participant_id=receiver_id,
+            amount=form.amount.data,
+            note=form.note.data.strip() if form.note.data else "",
+        )
+        db.session.add(payment)
+
+        receiver_participant = participant_by_id[receiver_id]
+        if receiver_participant.user_id and receiver_participant.user_id != current_user.id:
+            payer_participant = participant_by_id[payer_id]
+            create_notification(
+                user_id=receiver_participant.user_id,
+                type=Notification.TYPE_PAYMENT,
+                title=f"Pagamento recebido em {group.nome}",
+                body=f"{payer_participant.nome} registrou um pagamento para você.",
+                link=url_for("groups.detail", group_id=group.id),
+            )
+
+        db.session.commit()
+        flash("Pagamento registrado com sucesso.", "success")
+        return redirect(url_for("groups.detail", group_id=group.id))
+
+    return _render_detail(group, payment_form=form, status_code=400)
+
+
+@groups_bp.get("/<int:group_id>/export/csv")
+@login_required
+def export_csv(group_id: int):
+    import csv
+    import io
+
+    group = _get_group_for_user_or_404(group_id)
+    participants = _group_participants(group)
+    expenses = _group_expenses(group)
+    payments = (
+        Payment.query.filter_by(group_id=group.id)
+        .order_by(Payment.created_at.desc())
+        .all()
+    )
+    summary = calculate_group_summary(participants, expenses, payments)
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+
+    writer.writerow(["Relatório do grupo", group.nome])
+    writer.writerow(["Total gasto", str(summary.total_spent)])
+    writer.writerow(["Participantes", str(summary.participant_count)])
+    writer.writerow(["Despesas", str(summary.expense_count)])
+    writer.writerow([])
+
+    writer.writerow(["DESPESAS"])
+    writer.writerow(["Data", "Título", "Valor", "Pagador", "Participantes"])
+    for expense in expenses:
+        participant_names = ", ".join(
+            share.participant.nome for share in expense.participant_shares
+        )
+        writer.writerow([
+            expense.expense_date.strftime("%d/%m/%Y"),
+            expense.title,
+            f"{expense.amount:.2f}",
+            expense.payer.nome,
+            participant_names,
+        ])
+
+    writer.writerow([])
+    writer.writerow(["PAGAMENTOS"])
+    writer.writerow(["Data", "Pagador", "Recebedor", "Valor", "Observação"])
+    for payment in payments:
+        writer.writerow([
+            payment.created_at.strftime("%d/%m/%Y"),
+            payment.payer.nome,
+            payment.receiver.nome,
+            f"{payment.amount:.2f}",
+            payment.note or "",
+        ])
+
+    writer.writerow([])
+    writer.writerow(["SALDOS"])
+    writer.writerow(["Participante", "Total Pago", "Total Devido", "Saldo", "Status"])
+    for balance in summary.balances:
+        writer.writerow([
+            balance.participant.nome,
+            f"{balance.total_paid:.2f}",
+            f"{balance.total_due:.2f}",
+            f"{balance.balance:.2f}",
+            balance.status_label,
+        ])
+
+    writer.writerow([])
+    writer.writerow(["SUGESTÕES DE ACERTO"])
+    writer.writerow(["Pagador", "Recebedor", "Valor"])
+    for settlement in summary.settlements:
+        writer.writerow([
+            settlement.payer.nome,
+            settlement.receiver.nome,
+            f"{settlement.amount:.2f}",
+        ])
+
+    csv_content = output.getvalue()
+    output.close()
+
+    return Response(
+        csv_content,
+        mimetype="text/csv",
+        headers={"Content-Disposition": f"attachment; filename=grupo_{group.id}_{group.nome}.csv"},
+    )
+
+
+@groups_bp.post("/<int:group_id>/messages")
+@login_required
+def send_message(group_id: int):
+    group = _get_group_for_user_or_404(group_id)
+    form = MessageForm()
+
+    if form.validate_on_submit():
+        message = Message(
+            group_id=group.id,
+            user_id=current_user.id,
+            content=form.content.data.strip(),
+        )
+        db.session.add(message)
+
+        participants = _group_participants(group)
+        for p in participants:
+            if p.user_id and p.user_id != current_user.id:
+                create_notification(
+                    user_id=p.user_id,
+                    type=Notification.TYPE_MESSAGE,
+                    title=f"Nova mensagem em {group.nome}",
+                    body=f"{current_user.nome}: {form.content.data.strip()[:80]}",
+                    link=url_for("groups.detail", group_id=group.id),
+                )
+
+        db.session.commit()
+        flash("Mensagem enviada.", "success")
+        return redirect(url_for("groups.detail", group_id=group.id))
+
+    return _render_detail(group, message_form=form, status_code=400)

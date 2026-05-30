@@ -36,6 +36,18 @@ class Group(db.Model):
         cascade="all, delete-orphan",
         order_by="GroupInvitation.created_at.desc()",
     )
+    payments = db.relationship(
+        "Payment",
+        back_populates="group",
+        cascade="all, delete-orphan",
+        order_by="Payment.created_at.desc()",
+    )
+    messages = db.relationship(
+        "Message",
+        back_populates="group",
+        cascade="all, delete-orphan",
+        order_by="Message.created_at.asc()",
+    )
 
     def __repr__(self) -> str:
         return f"<Group id={self.id} nome='{self.nome}'>"

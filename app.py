@@ -9,7 +9,8 @@ from flask import Flask, render_template
 
 from extensions import db, login_manager
 from models import User
-from routes import auth_bp, groups_bp
+from routes import auth_bp, groups_bp, notifications_bp, oauth_bp
+from routes.oauth import init_oauth
 
 load_dotenv()
 
@@ -36,6 +37,10 @@ def create_app(config_overrides: dict | None = None) -> Flask:
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(groups_bp)
+    app.register_blueprint(notifications_bp)
+    app.register_blueprint(oauth_bp)
+
+    init_oauth(app)
 
     if app.debug:
         app.logger.setLevel(logging.DEBUG)
@@ -75,9 +80,42 @@ def create_app(config_overrides: dict | None = None) -> Flask:
     def load_user(user_id: str):
         return db.session.get(User, int(user_id))
 
+    @app.context_processor
+    def inject_unread_notifications():
+        from flask_login import current_user
+        from models import Notification
+
+        if current_user.is_authenticated:
+            count = Notification.query.filter_by(
+                user_id=current_user.id, is_read=False
+            ).count()
+            return {"unread_notifications_count": count}
+        return {"unread_notifications_count": 0}
+
     @app.get("/")
     def index() -> str:
-        return render_template("index.html")
+        from flask_login import current_user
+        from models import Group, Participant
+        from sqlalchemy import or_
+
+        groups = []
+        stats = {"total_groups": 0, "total_expenses": 0, "total_participants": 0}
+        if current_user.is_authenticated:
+            all_groups = (
+                Group.query.filter(
+                    or_(
+                        Group.owner_id == current_user.id,
+                        Group.participants.any(Participant.user_id == current_user.id),
+                    )
+                )
+                .order_by(Group.updated_at.desc())
+                .all()
+            )
+            groups = all_groups[:6]
+            stats["total_groups"] = len(all_groups)
+            stats["total_expenses"] = sum(len(g.expenses) for g in all_groups)
+            stats["total_participants"] = sum(len(g.participants) for g in all_groups)
+        return render_template("index.html", groups=groups, stats=stats)
 
     return app
 

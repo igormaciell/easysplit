@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from decimal import Decimal
 
-from models import Expense, Participant
+from models import Expense, Participant, Payment
 from services.expense_split_service import CENTS, to_money
 
 
@@ -53,6 +53,7 @@ class GroupFinancialSummary:
 def calculate_group_summary(
     participants: list[Participant],
     expenses: list[Expense],
+    payments: list[Payment] | None = None,
 ) -> GroupFinancialSummary:
     totals = {
         participant.id: {
@@ -79,6 +80,14 @@ def calculate_group_summary(
         for share in expense.participant_shares:
             if share.participant_id in totals:
                 totals[share.participant_id]["due"] += to_money(share.divided_amount)
+
+    if payments:
+        for payment in payments:
+            pay_amount = to_money(payment.amount)
+            if payment.payer_participant_id in totals:
+                totals[payment.payer_participant_id]["paid"] += pay_amount
+            if payment.receiver_participant_id in totals:
+                totals[payment.receiver_participant_id]["due"] += pay_amount
 
     balances = [
         ParticipantBalance(

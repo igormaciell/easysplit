@@ -1,6 +1,6 @@
 ﻿from flask_wtf import FlaskForm
 from wtforms import EmailField, PasswordField, StringField, SubmitField
-from wtforms.validators import DataRequired, Email, EqualTo, Length
+from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional
 
 
 class RegisterForm(FlaskForm):
@@ -17,6 +17,13 @@ class RegisterForm(FlaskForm):
             DataRequired(message="Informe seu e-mail."),
             Email(message="Informe um e-mail válido."),
             Length(max=255, message="E-mail muito longo."),
+        ],
+    )
+    telefone = StringField(
+        "Telefone (opcional)",
+        validators=[
+            Optional(),
+            Length(max=20, message="Telefone deve ter no máximo 20 caracteres."),
         ],
     )
     password = PasswordField(

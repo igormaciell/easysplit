@@ -12,7 +12,9 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False, index=True)
+    telefone = db.Column(db.String(20), default="")
     password_hash = db.Column(db.String(255), nullable=False)
+    google_id = db.Column(db.String(255), unique=True, index=True)
     created_at = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(UTC))
     updated_at = db.Column(
         db.DateTime,
@@ -22,6 +24,10 @@ class User(UserMixin, db.Model):
     )
     groups = db.relationship("Group", back_populates="owner", cascade="all, delete-orphan")
     participants = db.relationship("Participant", back_populates="user")
+    notifications = db.relationship(
+        "Notification", back_populates="user", cascade="all, delete-orphan", order_by="Notification.created_at.desc()"
+    )
+    messages = db.relationship("Message", back_populates="user", cascade="all, delete-orphan")
 
     def set_password(self, password: str) -> None:
         self.password_hash = generate_password_hash(password)
